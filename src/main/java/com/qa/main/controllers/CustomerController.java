@@ -11,48 +11,43 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import com.qa.main.entities.Customer;
+import com.qa.main.services.CustomerService;
 
 @RestController
 public class CustomerController {
-
-	// Temporary Storage, until we implement the real database
-	private List<Customer> customers = new ArrayList<>();
 	
+	private CustomerService service;
+	
+	public CustomerController(CustomerService service) {
+		super();
+		this.service = service;
+	}
+
 	// Post Requests (CREATE)
 	@PostMapping("/create")
 	public Customer create(@RequestBody Customer input) {
-		customers.add(input);
-		
-		return customers.get(customers.size() - 1);
+		return service.create(input);
 	}
 	
 	// Get Requests (READ)
 	@GetMapping("/getAll")
 	public List<Customer> getAll() {
-		return customers;
+		return service.getAll();
 	}
 	
 	@GetMapping("/getById/{id}")
 	public Customer getById(@PathVariable int id) {
-		return customers.get(id);
+		return service.getById(id);
 	}
 	
-	// Put Requests (UPDATE)
+	// Put Requests (WHOLE UPDATE)
 	@PutMapping("/update/{id}")
 	public Customer update(@PathVariable int id, @RequestBody Customer input) {
-		// Remove original user
-		customers.remove(id);
-		
-		// Add the updated user in the same position
-		customers.add(id, input);
-		
-		return customers.get(id);
-		
+		return service.update(id, input);
 	}
 	
-//	// Delete Requests (DELETE)
-//	@DeleteMapping("/delete")
-//	public Customer delete() {
-//		
-//	}
+	@DeleteMapping("/delete/{id}")
+	public Customer delete(@PathVariable int id) {
+		return service.delete(id);
+	}
 }
