@@ -36,18 +36,18 @@ public class CustomerController {
 	}
 	
 	@GetMapping("/getById/{id}")
-	public Customer getById(@PathVariable int id) {
+	public Customer getById(@PathVariable long id) {
 		return service.getById(id);
 	}
 	
 	// Put Requests (WHOLE UPDATE)
 	@PutMapping("/update/{id}")
-	public Customer update(@PathVariable int id, @RequestBody Customer input) {
+	public Customer update(@PathVariable long id, @RequestBody Customer input) {
 		return service.update(id, input);
 	}
 	
 	@DeleteMapping("/delete/{id}")
-	public Customer delete(@PathVariable int id) {
+	public boolean delete(@PathVariable long id) {
 		return service.delete(id);
 	}
 }

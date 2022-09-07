@@ -4,40 +4,45 @@ import java.util.ArrayList;
 import java.util.List;
 import org.springframework.stereotype.Service;
 import com.qa.main.entities.Customer;
+import com.qa.main.repos.CustomerRepo;
 
 @Service
 public class CustomerService {
 
-	// Temporary Storage, until we implement the real database
-	private List<Customer> customers = new ArrayList<>();
-	
-	public Customer create(Customer input) {
-		customers.add(input);
+	private CustomerRepo repo;
 		
-		return customers.get(customers.size() - 1);
+	public CustomerService(CustomerRepo repo) {
+		super();
+		this.repo = repo;
+	}
+
+	public Customer create(Customer input) {
+		return repo.saveAndFlush(input);
 	}
 	
 	public List<Customer> getAll() {
-		return customers;
+		return repo.findAll();
 	}
 	
-	public Customer getById(int id) {
-		return customers.get(id);
+	public Customer getById(long id) {
+		return repo.findById(id).get();
 	}
 	
-	public Customer update(int id, Customer input) {
-		// Remove original user
-		customers.remove(id);
+	public Customer update(long id, Customer input) {
+		Customer existing = repo.findById(id).get();
 		
-		// Add the updated user in the same position
-		customers.add(id, input);
+		existing.setFirstName(input.getFirstName());
+		existing.setLastName(input.getLastName());
+		existing.setAge(input.getAge());
 		
-		// Get the user by id to check it's been updated
-		return customers.get(id);
-		
+		return repo.saveAndFlush(existing);
 	}
 	
-	public Customer delete(int id) {
-		return this.customers.remove(id);
+	public boolean delete(long id) {
+		// Deletes the entry by ID
+		repo.deleteById(id);
+		
+		// Checks if the entry exists by ID
+		return !repo.existsById(id);
 	}
 }
