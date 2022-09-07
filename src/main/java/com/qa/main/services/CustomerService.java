@@ -1,8 +1,9 @@
 package com.qa.main.services;
 
-import java.util.ArrayList;
 import java.util.List;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
+
 import com.qa.main.entities.Customer;
 import com.qa.main.repos.CustomerRepo;
 
@@ -26,6 +27,10 @@ public class CustomerService {
 	
 	public Customer getById(long id) {
 		return repo.findById(id).get();
+	}
+	
+	public List<Customer> getByFirstName(String firstName) {
+		return repo.findCustomerByFirstName(firstName);
 	}
 	
 	public Customer update(long id, Customer input) {

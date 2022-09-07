@@ -1,8 +1,6 @@
 package com.qa.main.controllers;
 
-import java.util.ArrayList;
 import java.util.List;
-
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -38,6 +36,11 @@ public class CustomerController {
 	@GetMapping("/getById/{id}")
 	public Customer getById(@PathVariable long id) {
 		return service.getById(id);
+	}
+	
+	@GetMapping("/getByFirstName/{firstName}")
+	public List<Customer> getByFirstName(@PathVariable String firstName) {
+		return service.getByFirstName(firstName);
 	}
 	
 	// Put Requests (WHOLE UPDATE)
