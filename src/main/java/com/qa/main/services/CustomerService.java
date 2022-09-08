@@ -5,6 +5,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import com.qa.main.entities.Customer;
+import com.qa.main.exceptions.CustomerNotFoundException;
 import com.qa.main.repos.CustomerRepo;
 
 @Service
@@ -26,7 +27,7 @@ public class CustomerService {
 	}
 	
 	public Customer getById(long id) {
-		return repo.findById(id).get();
+		return repo.findById(id).orElseThrow(CustomerNotFoundException::new);
 	}
 	
 	public List<Customer> getByFirstName(String firstName) {
@@ -34,7 +35,7 @@ public class CustomerService {
 	}
 	
 	public Customer update(long id, Customer input) {
-		Customer existing = repo.findById(id).get();
+		Customer existing = repo.findById(id).orElseThrow(CustomerNotFoundException::new);
 		
 		existing.setFirstName(input.getFirstName());
 		existing.setLastName(input.getLastName());
