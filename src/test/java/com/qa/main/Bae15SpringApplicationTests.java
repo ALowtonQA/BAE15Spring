@@ -10,4 +10,8 @@ class Bae15SpringApplicationTests {
 	void contextLoads() {
 	}
 
+	@Test
+	public void main() {
+		Bae15SpringApplication.main(new String[] {});
+	}
 }
