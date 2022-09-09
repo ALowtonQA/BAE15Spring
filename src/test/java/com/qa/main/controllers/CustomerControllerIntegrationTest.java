@@ -1,7 +1,9 @@
 package com.qa.main.controllers;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -18,7 +20,6 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.jdbc.Sql.ExecutionPhase;
 import org.springframework.test.web.servlet.MockMvc;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.qa.main.entities.Customer;
 
@@ -96,12 +97,27 @@ public class CustomerControllerIntegrationTest {
 	
 	@Test
 	public void updateTest() throws Exception{
+		// An object for sending in the body of the request
+		Customer input = new Customer("Bob", "Lowton", 30);
+		String inputAsJSON = mapper.writeValueAsString(input);
 		
+		// An object for checking the response
+		Customer response = new Customer(1L, "Bob", "Lowton", 30);
+		String responseAsJSON = mapper.writeValueAsString(response);
+		
+		mvc.perform(put("/customer/update/1")
+			.contentType(MediaType.APPLICATION_JSON)
+			.content(inputAsJSON))
+			.andExpect(status().isOk())
+			.andExpect(content().json(responseAsJSON));		
 	}
 	
 	@Test
 	public void deleteTest() throws Exception{
-		
+		mvc.perform(delete("/customer/delete/1")
+			.contentType(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk())
+			.andExpect(content().string("true"));
 	}
 
 }
