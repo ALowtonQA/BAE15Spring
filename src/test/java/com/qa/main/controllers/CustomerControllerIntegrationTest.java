@@ -1,6 +1,7 @@
 package com.qa.main.controllers;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -34,8 +35,20 @@ public class CustomerControllerIntegrationTest {
 	private ObjectMapper mapper; // Is for converting TO and FROM JSON data
 	
 	@Test
-	public void createTest() {
+	public void createTest() throws Exception {
+		// An object for sending in the body of the request
+		Customer input = new Customer("Bob", "Lowton", 30);
+		String inputAsJSON = mapper.writeValueAsString(input);
 		
+		// An object for checking the response
+		Customer response = new Customer(2L, "Bob", "Lowton", 30);
+		String responseAsJSON = mapper.writeValueAsString(response);
+		
+		mvc.perform(post("/customer/create")
+			.contentType(MediaType.APPLICATION_JSON)
+			.content(inputAsJSON))
+			.andExpect(status().isCreated())
+			.andExpect(content().json(responseAsJSON));
 	}
 	
 	@Test
@@ -55,12 +68,30 @@ public class CustomerControllerIntegrationTest {
 	
 	@Test
 	public void getByIdTest() throws Exception{
+
+		Customer result = new Customer(1L, "Anoush", "Lowton", 29);
 		
+		String resultAsJSON = mapper.writeValueAsString(result);
+		
+		mvc.perform(get("/customer/getById/1")
+			.contentType(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk())
+			.andExpect(content().json(resultAsJSON));
 	}
 	
 	@Test
 	public void getByFirstNameTest() throws Exception{
+		// Created a List
+		List<Customer> result = new ArrayList<>();
+		// Added my expected Customer to the List
+		result.add(new Customer(1L, "Anoush", "Lowton", 29));
+		// Converted that list into JSON
+		String resultAsJSON = mapper.writeValueAsString(result);
 		
+		mvc.perform(get("/customer/getByFirstName/Anoush")
+			.contentType(MediaType.APPLICATION_JSON))
+			.andExpect(status().isOk())
+			.andExpect(content().json(resultAsJSON));
 	}
 	
 	@Test
